@@ -7,7 +7,24 @@ public class ImageModel {
     private int height;
     private float ratio;
     private String url;
+    private String description;
+    private int id;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public int getWidth() {
         return width;

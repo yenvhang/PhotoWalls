@@ -2,9 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.eggache.photowalls.MainActivity">
+
+
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/search"
+        android:title="查找"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/search">
+
+    </item>
+
+    <item
+        android:id="@+id/browse_byalbum"
+        android:title="按相册浏览"
+        app:showAsAction="never">
+
+    </item>
+
+    <item
+        android:id="@+id/browse_byphtot"
+        android:title="按图片浏览"
+        app:showAsAction="never">
+
+    </item>
+
+
 </menu>

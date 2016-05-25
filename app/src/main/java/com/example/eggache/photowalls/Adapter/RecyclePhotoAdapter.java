@@ -6,15 +6,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.example.eggache.photowalls.Model.ImageModel;
-import com.example.eggache.photowalls.Model.Photo;
+import com.example.eggache.photowalls.MyApplication;
+import com.example.eggache.photowalls.Net.BitmapCache;
 import com.example.eggache.photowalls.PlaceHolderDrawableHelper;
 import com.example.eggache.photowalls.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +25,20 @@ import java.util.List;
  * Created by eggache on 2016/5/11.
  */
 public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapter.FramHolder> {
-    public boolean isScrolling;
     private static final String TAG = "Recycle";
-    private List<Photo> photos;
+    private final ImageLoader imageLoader;
     Context context;
     int width;
     private List<ImageModel> imageModels = new ArrayList<>();
     private OnItemClickListerner mOnItemClickListerner;
-    public RecyclePhotoAdapter(List<Photo> photos, Context context,int width){
-        this.photos =photos;
+    private RequestQueue mQueue;
+    public RecyclePhotoAdapter(RequestQueue mQueue, Context context, int width){
         this.context =context;
         this.width=width;
+        this.mQueue =mQueue;
+         imageLoader = new ImageLoader(mQueue, new BitmapCache());
+
+
 
     }
 
@@ -56,36 +61,57 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
        View view =LayoutInflater.from(parent.getContext())
                .inflate(R.layout.gridview_item,parent,false);
         FramHolder f =new FramHolder(view);
-        f.imageView.setTag(f);
+//        f.imageView.setTag(f);
         return f;
     }
 
     @Override
     public void onBindViewHolder(final FramHolder holder, final int position) {
-        Log.e(TAG,position+"");
-        holder.textView.setText(position+"");
-        ImageModel item =imageModels.get(position);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.imageView.getLayoutParams();
-        Log.e(TAG,"item.getWidth()"+item.getWidth()+"item.getHeight()"+item.getHeight());
-        double ratio = item.getHeight()*1.0 /(item.getWidth()*1.0)>=1?
-                item.getHeight()*1.0 /item.getWidth():1;
-        Log.e(TAG,"ratio"+ratio);
-        params.height = (int) (width *ratio);
-        Log.e(TAG," params.height"+ params.height);
-        holder.imageView.setLayoutParams(params);
-        holder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        Picasso.with(context).load(item.getUrl())
-                .placeholder(PlaceHolderDrawableHelper
-                        .getBackgroundDrawable(position)).into(holder.imageView);
+      try {
+          ImageModel item = imageModels.get(position);
 
-//        Photo.setImageBitmap(context,holder.imageView,position,width,isScrolling);
-        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mOnItemClickListerner.onItemLongClick(v,holder.getLayoutPosition());
-                return false;
-            }
-        });
+//        if(!item.getUrl().equals(holder.imageView.getTag())){
+
+          LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.imageView.getLayoutParams();
+          params.width = width;
+
+          params.height = (int) ((width*1.0/item.getWidth()*item.getHeight()));
+
+
+          holder.imageView.setBackground(PlaceHolderDrawableHelper.getBackgroundDrawable(position));
+          holder.imageView.setImageUrl(item.getUrl(), imageLoader);
+          holder.imageView.setTag(item.getUrl());
+          holder.imageView.setLayoutParams(params);
+
+
+
+
+
+          holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+              @Override
+              public boolean onLongClick(View v) {
+                  mOnItemClickListerner.onItemLongClick(v, position);
+                  return false;
+              }
+          });
+
+          holder.imageView.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  mOnItemClickListerner.onItemClick(v, position);
+
+              }
+          });
+
+//        }
+
+
+          holder.textView.setText(item.getDescription());
+      }
+      catch (Exception e){
+          Log.e(TAG,Log.getStackTraceString(e));
+      }
+
     }
 
     @Override
@@ -95,22 +121,25 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
 
     class FramHolder extends RecyclerView.ViewHolder{
         TextView textView;
-        ImageView imageView;
+        NetworkImageView imageView;
 
         public FramHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.photoIV);
+            imageView = (NetworkImageView) itemView.findViewById(R.id.photoIV);
             textView = (TextView) itemView.findViewById(R.id.descriptionTV);
         }
 
     }
     public void addDrawable(ImageModel imageModel) {
-        float ratio = (float) imageModel.getHeight() / (float) imageModel.getWidth();
-        imageModel.setRatio(ratio);
+//        float ratio = (float) imageModel.getHeight() / (float) imageModel.getWidth();
+//        imageModel.setRatio(ratio);
         this.imageModels.add(imageModel);
+        MyApplication.getInstace().setImageModels(imageModels);
     }
 
     public List<ImageModel> getImageModels(){
         return imageModels;
     }
+
+
 }
