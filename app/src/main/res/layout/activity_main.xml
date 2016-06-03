@@ -16,7 +16,7 @@
         android:fitsSystemWindows="true"
 
 
-        tools:context="com.example.eggache.photowalls.MainActivity">
+        tools:context=".Activity.MainActivity">
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/out_toolbal"

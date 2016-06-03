@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+    <Button
+        android:layout_margin="10dp"
+        android:id="@+id/TV_photoManager_delet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="删除照片"/>
+    <Button
+        android:layout_margin="10dp"
+        android:id="@+id/TV_photoManager_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="修改照片信息"/>
+
+    <Button
+        android:layout_margin="10dp"
+        android:id="@+id/TV_photoManager_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="取消"/>
+</LinearLayout>
