@@ -5,12 +5,13 @@
 
 
     <item
-        android:id="@+id/search"
-        android:title="查找"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/search">
+        android:id="@+id/ab_search"
+        android:orderInCategory="80"
+        android:title="action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom"/>
 
-    </item>
+
 
     <item
         android:id="@+id/browse_byalbum"

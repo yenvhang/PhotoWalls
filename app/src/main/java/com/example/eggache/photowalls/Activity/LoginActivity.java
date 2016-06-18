@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,12 +22,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.eggache.photowalls.MyApplication;
 import com.example.eggache.photowalls.R;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.example.eggache.photowalls.Service.MyIntentService;
+import com.example.eggache.photowalls.Util.LoginManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,13 +49,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -69,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
+
     public static final int CODE_LOGIN_SUCCESS=111;
     private String TAG="LoginAcivity";
     public static final String CODE_LOGIN_USER="loginuser";
@@ -95,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        assert mEmailSignInButton != null;
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
-            return;
         }
 
 
@@ -166,24 +161,17 @@ public class LoginActivity extends AppCompatActivity {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_password_invalid));
-            focusView = mPasswordView;
-            cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_fileds_required));
-            focusView = mEmailView;
 
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_email_invalid));
-            focusView = mEmailView;
 
         } else {
             TryLogin(email, password);
@@ -254,23 +242,35 @@ public class LoginActivity extends AppCompatActivity {
                         showProgress(false);
                         String username = null;
                         String token =null;
+                        String url =null;
                         try {
                             username = response.getString("username");
                             token = response.getString("token");
-                            Log.e(TAG,username);
-                            Log.e(TAG,token);
+                            url =response.getString("url");
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        SharedPreferences mSharedPreferences = getSharedPreferences(CODE_LOGIN_USER, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = mSharedPreferences.edit();
-                        editor.putString("username",username);
-                        editor.putString("token", token);
-                        editor.commit();
+                        if(username==null){
+                            mPasswordView.setError(getString(R.string.error_password_or_email));
+
+                            return ;
+                        }
+                        LoginManager loginManager =LoginManager.getInstance();
+                        Map<String,String> maps =new HashMap<>();
+                        maps.put("username",username);
+                        maps.put("token",token);
+                        Log.e(TAG,token+"token");
+                        maps.put("url",url);
+                        loginManager.setAttribute(maps);
+                        Intent intent =new Intent(LoginActivity.this,MyIntentService.class);
+                        startService(intent);
                         Intent i =new Intent();
                         i.putExtra("username",username);
+                        Log.e(TAG,"loginsuccess");
                         setResult(CODE_LOGIN_SUCCESS,i);
+
                         finish();
 
                     }
@@ -282,7 +282,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-        MyApplication.getmRequestQueue().add(loginRequest);
+
+        RequestQueue queue =MyApplication.getmRequestQueue();
+        queue.add(loginRequest);
+        queue.start();
+
+
     }
 
 

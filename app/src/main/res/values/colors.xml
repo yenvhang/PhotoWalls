@@ -6,6 +6,7 @@
     <color name="white">#ffffffff</color>
     <color name="white_pressed">#ffffffff</color>
     <color name="half_black">#88888888</color>
+    <color name="grey">#AAAAAA</color>
     <color name="google_blue">#22222222</color>
     <color name="google_green">#33333333</color>
     <color name="google_red">#44444444</color>

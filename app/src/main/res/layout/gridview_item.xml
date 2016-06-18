@@ -1,38 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<LinearLayout
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    >
 
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/photoIV"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        />
+    <LinearLayout
 
-    <TextView
-        android:background="#FFFFFFFF"
-        android:id="@+id/descriptionTV"
-        android:maxLines="5"
+        android:id="@+id/bottom_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Journey To The West.Concept"
-        android:layout_marginBottom="2dp"
-       />
+        android:layout_height="match_parent"
+        android:background="#66ddff00"
+        android:orientation="vertical"
+        android:weightSum="3">
+        <!--What you want to show-->
 
+        <Button
+            android:id="@+id/btn_update_album_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#FFAA33"
+            android:text="设为相册封面" />
 
-    <TextView
-        android:background="#ffffff"
-        android:id="@+id/usernameTV"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Creep"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/TV_photoManager_update"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#00AA00"
+            android:text="修改照片信息" />
 
-</android.support.v7.widget.CardView>
+        <Button
+            android:id="@+id/TV_photoManager_delet"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#FF3333"
+            android:text="删除图片" />
+    </LinearLayout>
+
+    <!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--card_view:cardCornerRadius="6dp">-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/photoIV"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+
+                />
+
+            <TextView
+                android:id="@+id/descriptionTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="#FFFFFFFF"
+                android:gravity="center"
+                android:maxLines="5"
+                android:text="Journey To The West.Concept" />
+<View
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:background="#DDDDDD"/>
+
+            <TextView
+                android:id="@+id/usernameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="4dp"
+                android:background="#ffffff"
+                android:gravity="center"
+                android:text="Creep" />
+        </LinearLayout>
+
+    <!--</android.support.v7.widget.CardView>-->
+</com.daimajia.swipe.SwipeLayout>

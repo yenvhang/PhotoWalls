@@ -1,4 +1,4 @@
-package com.example.eggache.photowalls;
+package com.example.eggache.photowalls.Util;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,9 +20,9 @@ public class PlaceHolderDrawableHelper {
 
 	public static Drawable getBackgroundDrawable(int position) {
 		if(drawableBackgroundList==null || drawableBackgroundList.size()==0) {
-			drawableBackgroundList = new ArrayList<Drawable>(placeholderValues.length);
-			for (int i=0; i<placeholderValues.length; i++) {
-				int color = Color.parseColor(placeholderValues[i]);
+			drawableBackgroundList = new ArrayList<>(placeholderValues.length);
+			for (String placeholderValue : placeholderValues) {
+				int color = Color.parseColor(placeholderValue);
 				drawableBackgroundList.add(new ColorDrawable(color));
 			}
 		}

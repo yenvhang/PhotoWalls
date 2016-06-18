@@ -9,6 +9,8 @@ import android.view.View;
 import com.example.eggache.photowalls.Activity.LoginActivity;
 import com.example.eggache.photowalls.MyApplication;
 
+import java.util.Map;
+
 import me.drakeet.materialdialog.MaterialDialog;
 
 /**
@@ -18,14 +20,17 @@ public class LoginManager {
     private final static LoginManager loginManager =new LoginManager();
     private SharedPreferences sharedPreferences;
 
-    private LoginManager(){};
+    private LoginManager(){
+        Context context =MyApplication.getInstace();
+        sharedPreferences =context.getSharedPreferences(LoginActivity.CODE_LOGIN_USER,
+                context.MODE_PRIVATE);
+
+    };
     public static LoginManager getInstance(){return loginManager;}
     private String defaultInfo =null;
     public String getDefaultInfo(){return defaultInfo;}
     public  String getLoginInfo(){
-        Context context =MyApplication.getInstace();
-        sharedPreferences =context.getSharedPreferences(LoginActivity.CODE_LOGIN_USER,
-                context.MODE_PRIVATE);
+
 
 
         if(sharedPreferences!=null) {
@@ -37,6 +42,40 @@ public class LoginManager {
         }
         return null;
     }
+
+    public void removeAll(){
+        SharedPreferences.Editor editor =sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public String geturl(){
+        String url =null;
+        if(sharedPreferences!=null) {
+
+             url = sharedPreferences.getString("url", null);
+        }
+        return url;
+    }
+
+    public void setAttribute(Map<String,String> maps){
+        SharedPreferences.Editor editor =sharedPreferences.edit();
+        for(String key:maps.keySet()){
+            editor.putString(key,maps.get(key));
+        }
+
+        editor.apply();
+
+    }
+
+    public void seturl(String str){
+        SharedPreferences.Editor editor =sharedPreferences.edit();
+        editor.putString("url",str);
+        editor.apply();
+
+    }
+
+
 
     public void login(final Context context ){
     try {
@@ -63,4 +102,7 @@ public class LoginManager {
     }
 
 
+    public String getToken() {
+        return sharedPreferences.getString("token","-1");
+    }
 }

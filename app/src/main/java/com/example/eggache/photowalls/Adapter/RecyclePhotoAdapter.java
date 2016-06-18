@@ -6,17 +6,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.daimajia.swipe.SwipeLayout;
 import com.example.eggache.photowalls.Model.ImageModel;
 import com.example.eggache.photowalls.MyApplication;
-import com.example.eggache.photowalls.Net.BitmapCache;
-import com.example.eggache.photowalls.PlaceHolderDrawableHelper;
 import com.example.eggache.photowalls.R;
+import com.example.eggache.photowalls.Util.PlaceHolderDrawableHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,28 +31,31 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
     Context context;
     int width;
     private List<ImageModel> imageModels = new ArrayList<>();
-    private OnItemClickListerner mOnItemClickListerner;
+    private OnItemClickListener mOnItemClickListerner;
     private RequestQueue mQueue;
-    public RecyclePhotoAdapter(RequestQueue mQueue, Context context, int width){
+    private OnHideViewClickListener mOnHideViewClickListener;
+
+    public RecyclePhotoAdapter(Context context, int width){
         this.context =context;
         this.width=width;
-        this.mQueue =mQueue;
-         imageLoader = new ImageLoader(mQueue, new BitmapCache());
+        this.mQueue =MyApplication.getmRequestQueue();
+        this.imageLoader =MyApplication.getImageLoader();
 
 
 
     }
 
-    public interface OnItemClickListerner {
-        void onItemClick(View view, int position);
 
-        void onItemLongClick(View view, int position);
-    }
 
-    public void setOnItemClickLitener(OnItemClickListerner mOnItemClickListerner) {
+
+
+    public void setOnItemClickLitener(OnItemClickListener mOnItemClickListerner) {
         this.mOnItemClickListerner = mOnItemClickListerner;
     }
 
+    public void setOnHideViewClickListener(OnHideViewClickListener mOnHideViewClickListener){
+        this.mOnHideViewClickListener = mOnHideViewClickListener;
+    }
 
 
 
@@ -77,31 +81,13 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
 
           params.height = (int) ((width*1.0/item.getWidth()*item.getHeight()));
 
-
           holder.imageView.setBackground(PlaceHolderDrawableHelper.getBackgroundDrawable(position));
+          holder.imageView.setLayoutParams(params);
           holder.imageView.setImageUrl(item.getUrl(), imageLoader);
           holder.imageView.setTag(item.getUrl());
-          holder.imageView.setLayoutParams(params);
 
 
-
-
-
-          holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
-              @Override
-              public boolean onLongClick(View v) {
-                  mOnItemClickListerner.onItemLongClick(v, position);
-                  return false;
-              }
-          });
-
-          holder.imageView.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  mOnItemClickListerner.onItemClick(v, position);
-
-              }
-          });
+          registerUIListener(holder, position);
 
 //        }
 
@@ -114,19 +100,70 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
 
     }
 
+    private void registerUIListener(FramHolder holder, final int position) {
+        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mOnItemClickListerner.onItemLongClick(v, position);
+                return false;
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnItemClickListerner.onItemClick(v, position);
+
+            }
+        });
+
+        holder.update_aLbum_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              mOnHideViewClickListener.onClick(v,position);
+            }
+        });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnHideViewClickListener.onClick(v,position);
+            }
+        });
+
+        holder.update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnHideViewClickListener.onClick(v,position);
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return imageModels.size();
     }
 
     class FramHolder extends RecyclerView.ViewHolder{
+        private final Button delete;
+        private final Button update;
+        private final Button update_aLbum_photo;
         TextView textView;
         NetworkImageView imageView;
 
         public FramHolder(View itemView) {
             super(itemView);
-            imageView = (NetworkImageView) itemView.findViewById(R.id.photoIV);
-            textView = (TextView) itemView.findViewById(R.id.descriptionTV);
+            SwipeLayout swipeLayout = (SwipeLayout) itemView;
+                    imageView = (NetworkImageView) swipeLayout.findViewById(R.id.photoIV);
+            textView = (TextView) swipeLayout.findViewById(R.id.descriptionTV);
+            update_aLbum_photo = (Button) swipeLayout.findViewById(R.id.btn_update_album_photo);
+            delete = (Button) swipeLayout.findViewById(R.id.TV_photoManager_delet);
+            update = (Button) swipeLayout.findViewById(R.id.TV_photoManager_update);
+            //set show mode.
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+
+//add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
+            swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeLayout.findViewById(R.id.bottom_wrapper));
         }
 
     }
@@ -140,6 +177,7 @@ public class RecyclePhotoAdapter extends RecyclerView.Adapter<RecyclePhotoAdapte
     public List<ImageModel> getImageModels(){
         return imageModels;
     }
+
 
 
 }

@@ -9,6 +9,15 @@ public class ImageModel {
     private String url;
     private String description;
     private int id;
+    private String album;
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
 
     public int getId() {
         return id;
@@ -57,5 +66,10 @@ public class ImageModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return getId()+"";
     }
 }

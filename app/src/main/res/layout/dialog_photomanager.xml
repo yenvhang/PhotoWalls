@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:padding="16dp">
     <Button
+        android:id="@+id/btn_update_album_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设为相册封面"/>
+    <Button
         android:layout_margin="10dp"
         android:id="@+id/TV_photoManager_delet"
         android:layout_width="match_parent"

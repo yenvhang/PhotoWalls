@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="192dp"
-    android:background="?attr/colorPrimaryDark"
+    android:background="#00BCD4"
     android:orientation="vertical"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -15,23 +15,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
-        android:text="http://blog.csdn.net/lmj623565791"/>
+       />
 
     <TextView
         android:id="@+id/id_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/id_link"
-        android:text="Zhang Hongyang"/>
+        android:textColor="#FFFFFF"
+        />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/IV_login"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_above="@id/id_username"
-        android:layout_marginBottom="16dp"
         android:src="@drawable/defaulthead"
-        />
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"/>
+
+
+
 
 
 </RelativeLayout>
